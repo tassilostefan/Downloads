@@ -31,7 +31,7 @@ else {
     Exit;
 }
 
-(Get-ChildItem -Path C:\ -Recurse| ? {
+(Get-ChildItem -Path E:\ -Recurse| ? {
   $_.Extension -eq ".xlsx"
 })
 

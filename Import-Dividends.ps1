@@ -208,4 +208,4 @@ $depot = Import-Csv -Path $depotPath -Delimiter ";" | Select-Object *,@{Name='Ka
 ($DividendenObj | where ISIN -EQ $isin | Select-Object  @{Name="Surname";Expression={[convert]::ToDouble($_.Dividende)}} | Measure-Object -Property "surname" -Sum).Sum}} 
 $csvPath = ($Directory + "Depotübersicht_Dividenden.csv")
 $depot | Select-Object -First ($depot.Length-2) | Select-Object Name, ISIN, WKN, Typ, Datum, Zeit, Bestand, 'Akt. Geldkurs', 'Akt. Geldkurs Currency', Boerse, Tagesperformance, Tagesperformance_%, 'Aktueller Wert', Wert, Kaufdatum, Kaufkurs, Kaufwert, Dividende | Export-Csv -Path $csvPath -NoTypeInformation -Delimiter ";"
-#importXls($csvPath)
+#import2Xls($csvPath)
