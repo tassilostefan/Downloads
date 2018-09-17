@@ -173,8 +173,8 @@ Get-ChildItem ($Directory + "*Wertpapierabrechnung.pdf") -File |  %{
         }
 
     }
-
 }
+
 $obj = [PSCustomObject]@{
     Datei = "code-generated"
     Aktie = 'Red Hat'
@@ -201,11 +201,12 @@ cleanCsvHeader($depotPath)
 
 $depot = Import-Csv -Path $depotPath -Delimiter ";" 
 
-#adds Kaufdatum & Dividende as new columns of $depotPath-csv.Based on Depot-, Dividende- & Kaufdatum-ISIN, corresponding columns values are inserted.
+#adds Kaufdatum & Dividende as new columns of $depotPath-csv.Based on ISIN, Dividende- & Kaufdatum-columns values are inserted.
 #in case of Dividende, the sum of all Dividende-values with the corresponding ISIN is calculated with Measure-Object after each values is converted to double 
 $depot = Import-Csv -Path $depotPath -Delimiter ";" | Select-Object *,@{Name='Kaufdatum';Expression={$isin = $_.ISIN
 ($KaufObjs | where ISIN -EQ $isin | Select-Object Datum)[0].Datum}},@{Name='Dividende';Expression={$isin = $_.ISIN
 ($DividendenObj | where ISIN -EQ $isin | Select-Object  @{Name="Surname";Expression={[convert]::ToDouble($_.Dividende)}} | Measure-Object -Property "surname" -Sum).Sum}} 
 $csvPath = ($Directory + "Depotübersicht_Dividenden.csv")
+#do not export the last two empty lines of the csv, only export the relevant columns, i.e. those that cannot be calculated based on other columns' value.
 $depot | Select-Object -First ($depot.Length-2) | Select-Object Name, ISIN, WKN, Typ, Datum, Zeit, Bestand, 'Akt. Geldkurs', 'Akt. Geldkurs Currency', Boerse, Tagesperformance, Tagesperformance_%, 'Aktueller Wert', Wert, Kaufdatum, Kaufkurs, Kaufwert, Dividende | Export-Csv -Path $csvPath -NoTypeInformation -Delimiter ";"
 #import2Xls($csvPath)
